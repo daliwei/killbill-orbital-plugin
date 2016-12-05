@@ -5,6 +5,8 @@ module ActiveMerchant
 
     class OrbitalGateway
 
+      API_VERSION = "6.9"
+
       def store(creditcard, options = {})
         response = add_customer_profile(creditcard, options)
 
@@ -64,6 +66,7 @@ module ActiveMerchant
       def authorize(money, creditcard, options = {})
         order = build_new_order_xml(AUTH_ONLY, money, options) do |xml|
           add_creditcard(xml, creditcard, options)
+          add_network_tokenization(xml, creditcard)
           add_address(xml, creditcard, options)
           if @options[:customer_profiles]
             add_customer_data(xml, creditcard, options)
@@ -77,6 +80,7 @@ module ActiveMerchant
       def purchase(money, creditcard, options = {})
         order = build_new_order_xml(AUTH_AND_CAPTURE, money, options) do |xml|
           add_creditcard(xml, creditcard, options)
+          add_network_tokenization(xml, creditcard)
           add_address(xml, creditcard, options)
           if @options[:customer_profiles]
             add_customer_data(xml, creditcard, options)
@@ -109,6 +113,29 @@ module ActiveMerchant
           end
           xml.tag! :CardSecVal,  creditcard.verification_value if creditcard.verification_value?
         end
+      end
+
+      def add_network_tokenization(xml, payment_method)
+        return unless network_tokenization?(payment_method)
+
+        payment_cryptogram = Base64.decode64(payment_method.payment_cryptogram)
+
+        xml.tag!('AuthenticationECIInd', payment_method.eci) if payment_method.eci?
+        xml.tag!('DigitalTokenCryptogram', payment_cryptogram)
+        xml.tag!('DPANInd', 'Y')
+
+        case card_brand(payment_method).to_sym
+          when :visa
+            xml.tag!('CAVV', payment_cryptogram)
+          when :mastercard
+            xml.tag!('AAV', payment_cryptogram)
+          when :american_express
+            xml.tag!('AEVV', payment_cryptogram)
+        end
+      end
+
+      def network_tokenization?(payment_method)
+        payment_method.is_a?(NetworkTokenizationCreditCard)
       end
 
     end
