@@ -177,7 +177,6 @@ module ActiveMerchant
         # The elements must follow a specific sequence
         xml.tag!('AuthenticationECIInd', payment_method.eci) if payment_method.eci.nil?
         xml.tag!('CAVV', payment_method.payment_cryptogram) if card_brand == :visa
-        xml.tag!('AAV', payment_method.payment_cryptogram) if card_brand == :master
       end
 
       def add_addtional_network_tokenization(xml, payment_method)
@@ -185,6 +184,7 @@ module ActiveMerchant
         card_brand = card_brand(payment_method).to_sym
 
         # The elements must follow a specific sequence
+        xml.tag!('AAV', payment_method.payment_cryptogram) if card_brand == :master
         xml.tag!('DPANInd', 'Y')
         xml.tag!('AEVV', payment_method.payment_cryptogram) if card_brand == :american_express
         xml.tag!('DigitalTokenCryptogram', payment_method.payment_cryptogram)
