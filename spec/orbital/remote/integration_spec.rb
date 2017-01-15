@@ -58,30 +58,13 @@ describe Killbill::Orbital::PaymentPlugin do
   #   include_examples 'payment_flow_spec'
   # end
 
-  context 'tokenized credit card flow master' do
-    before(:each) do
-      cryptogram  = 'EHuWW9PiBkWvqE5juRwDzAUFBAk='
-      @properties = build_pm_properties(nil,
-                                        {
-                                            :cc_number => 5555555555554444,
-                                            :cc_type => 'master',
-                                            :payment_cryptogram => cryptogram
-                                        })
-      @pm         = create_payment_method(::Killbill::Orbital::OrbitalPaymentMethod, nil, @call_context.tenant_id, @properties, {})
-      @amount     = BigDecimal.new('100')
-      @currency   = 'USD'
-    end
-
-    include_examples 'payment_flow_spec'
-  end
-  #
-  # context 'tokenized credit card flow discover' do
+  # context 'tokenized credit card flow master' do
   #   before(:each) do
   #     cryptogram  = 'EHuWW9PiBkWvqE5juRwDzAUFBAk='
   #     @properties = build_pm_properties(nil,
   #                                       {
-  #                                           :cc_number => 6011111111111117,
-  #                                           :cc_type => 'discover',
+  #                                           :cc_number => 5555555555554444,
+  #                                           :cc_type => 'master',
   #                                           :payment_cryptogram => cryptogram
   #                                       })
   #     @pm         = create_payment_method(::Killbill::Orbital::OrbitalPaymentMethod, nil, @call_context.tenant_id, @properties, {})
@@ -92,6 +75,23 @@ describe Killbill::Orbital::PaymentPlugin do
   #   include_examples 'payment_flow_spec'
   # end
   #
+  context 'tokenized credit card flow discover' do
+    before(:each) do
+      cryptogram  = 'EHuWW9PiBkWvqE5juRwDzAUFBAk='
+      @properties = build_pm_properties(nil,
+                                        {
+                                            :cc_number => 6011111111111117,
+                                            :cc_type => 'discover',
+                                            :payment_cryptogram => cryptogram
+                                        })
+      @pm         = create_payment_method(::Killbill::Orbital::OrbitalPaymentMethod, nil, @call_context.tenant_id, @properties, {})
+      @amount     = BigDecimal.new('100')
+      @currency   = 'USD'
+    end
+
+    include_examples 'payment_flow_spec'
+  end
+
   # context 'tokenized credit card flow visa' do
   #   before(:each) do
   #     cryptogram  = 'EHuWW9PiBkWvqE5juRwDzAUFBAk='
