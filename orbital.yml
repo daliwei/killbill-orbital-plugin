@@ -1,9 +1,19 @@
 :orbital:
-  - :account_id: default
+  - :account_id: primary
     :test: true
-    :login: <%= ENV['LOGIN'] %>
-    :password: <%= ENV['PASSWORD'] %>
-    :merchant_id: "<%= ENV['MERCHANT_ID'] %>"
+    :login: "T1986GROUPON"
+    :password: "n2bDNNYpDg7Y"
+    :merchant_id: "201622"
+  - :account_id: getaways
+    :test: true
+    :login: "T1986GROUPON"
+    :password: "n2bDNNYpDg7Y"
+    :merchant_id: "201622"
+  - :account_id: groupon_live
+    :test: true
+    :login: "T1986GROUPON"
+    :password: "n2bDNNYpDg7Y"
+    :merchant_id: "201622"
 
 :database:
 # SQLite (development)
